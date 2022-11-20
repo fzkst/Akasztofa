@@ -11,14 +11,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,8 +42,9 @@ import java.util.stream.IntStream;
 
 
 public class MainActivity extends AppCompatActivity {
-    private Button buttonMinus, buttonPlus, buttonTippel;
+    private Button buttonMinus, buttonPlus, buttonTippel, buttonUjSzo;
     private TextView textKarakterek, textSzoveg;
+    private EditText editTextUjSzo;
     private ImageView imageAkasztofa;
     private AlertDialog.Builder builderJatekVege;
     private int aktualisKarakter;
@@ -43,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private String vonalak;
     private ArrayList<Character> karakterek = new ArrayList<>();
     private ArrayList<Character> hasznaltKarakterek = new ArrayList<>();
+    private ArrayList<String> mentettSzavak = new ArrayList<>();
     private int sikeresTippekSzama;
     private int sikertelenTippekSzama;
     private String hasznaltKatrakterekString;
@@ -51,13 +62,15 @@ public class MainActivity extends AppCompatActivity {
         buttonMinus = findViewById(R.id.buttonMinus);
         buttonPlus = findViewById(R.id.buttonPlus);
         buttonTippel = findViewById(R.id.buttonTippel);
+        buttonUjSzo = findViewById(R.id.buttonUjSzo);
         textKarakterek = findViewById(R.id.textKarakterek);
         textSzoveg = findViewById(R.id.textSzoveg);
         imageAkasztofa = findViewById(R.id.imageAkasztofa);
+        editTextUjSzo = findViewById(R.id.editTextujSzo);
         builderJatekVege = new AlertDialog.Builder(MainActivity.this);
         builderJatekVege.setCancelable(false)
                 .setTitle("Nyertél! / Vesztettél!")
-                .setMessage("Szeretne új játékot játszani?")
+                .setMessage("Szeretnél új játékot játszani?")
                 .setNegativeButton("Nem", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -75,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
         aktualisKarakter = 0;
         hasznaltKatrakterekString = "";
     }
+
+
 
     public void Lapozas(){
 
@@ -200,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
             builderJatekVege.setTitle("Nyertél!").create().show();
         }
         if (sikertelenTippekSzama == 13){
-            builderJatekVege.setTitle("Vesztettél!").create().show();
+            builderJatekVege.setTitle("Vesztettél!\nA megfejtés: " + kivalasztottSzo).create().show();
         }
     }
 
@@ -226,10 +241,13 @@ public class MainActivity extends AppCompatActivity {
     public void Game(){
         ArrayList<String> szavakLista = new ArrayList<String>(asList("acélos", "bestia", "cafka",
                 "csermely", "felleg", "ízes", "jégvirág", "katlan", "lokni", "spulni"));
+        mentettSzavak = new ArrayList<>(asList("acélos", "bestia", "cafka",
+                "csermely", "felleg", "ízes", "jégvirág", "katlan", "lokni", "spulni"));
         Random rnd = new Random();
         hasznaltKarakterek.clear();
         sikeresTippekSzama = 0;
         sikertelenTippekSzama = 0;
+        textKarakterek.setTextColor(Color.parseColor("#FF0000"));
         imageAkasztofa.setImageResource(R.drawable.akasztofa00);
         kivalasztottSzo = szavakLista.get((rnd.nextInt(szavakLista.size()) + 1) - 1).toUpperCase(Locale.ROOT);
         tippeltSzoveg = "";
@@ -238,8 +256,8 @@ public class MainActivity extends AppCompatActivity {
             vonalak += "_ ";
             tippeltSzoveg += "_";
         }
+
         textSzoveg.setText(vonalak);
-        //buttonTippel.setText(kivalasztottSzo);
         buttonTippel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -251,10 +269,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
+        buttonUjSzo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (String.valueOf(editTextUjSzo) != ""){
+                    editTextUjSzo.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                    szavakLista.add(String.valueOf(editTextUjSzo));
+                    mentettSzavak.add(String.valueOf(editTextUjSzo));
+                    editTextUjSzo.setText(String.valueOf(""));
+                    SaveData();
+                }
+            }
+        });
     }
+
+    private void SaveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(mentettSzavak);
+        editor.putString("task list", json);
+        editor.apply();
+    }
+
+    private void LoadData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("task list", null);
+        Type type = new TypeToken<ArrayList<String>>() {}.getType();
+        mentettSzavak = gson.fromJson(json, type);
+
+        if (mentettSzavak == null) {
+            mentettSzavak = new ArrayList<>();
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -262,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Init();
         Lapozas();
+        LoadData();
         Game();
     }
 }

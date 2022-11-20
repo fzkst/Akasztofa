@@ -7,44 +7,43 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:id="@+id/linear"
-        android:gravity="center"
-        android:layout_marginTop="20sp">
+        android:layout_marginTop="20sp"
+        android:gravity="center">
 
         <Button
+            android:id="@+id/buttonMinus"
             android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:id="@+id/buttonMinus"
-            app:backgroundTint="@null"
             android:background="@drawable/buttonbackround"
             android:text="-"
             android:textColor="@color/black"
-            android:textSize="30sp"/>
+            android:textSize="30sp"
+            app:backgroundTint="@null" />
 
         <TextView
+            android:id="@+id/textKarakterek"
             android:layout_width="20sp"
             android:layout_height="match_parent"
-            android:id="@+id/textKarakterek"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:gravity="center"
             android:text="A"
-            android:textSize="30sp"
-            android:textStyle="bold"
             android:textColor="@color/red"
-            android:gravity="center"/>
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <Button
+            android:id="@+id/buttonPlus"
             android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:id="@+id/buttonPlus"
-            app:backgroundTint="@null"
             android:background="@drawable/buttonbackround"
             android:text="+"
             android:textColor="@color/black"
             android:textSize="30sp"
-            />
+            app:backgroundTint="@null" />
 
     </LinearLayout>
 
@@ -52,37 +51,58 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linear"
-        android:paddingBottom="30dp">
+        android:paddingBottom="110dp">
 
+        <Button
+            android:id="@+id/buttonTippel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:backgroundTint="@color/grey"
+            android:text="Tippel" />
+
+        <ImageView
+            android:id="@+id/imageAkasztofa"
+            android:layout_width="240dp"
+            android:layout_height="400dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"/>
+
+        <TextView
+            android:id="@+id/textSzoveg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textSize="30sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="15dp"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/buttonTippel"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true"
-            android:text="Tippel"
-            android:backgroundTint="@color/grey"/>
+            android:id="@+id/buttonUjSzo"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/grey"
+            android:text="Új szó hozzáadása" />
 
-        <ImageView
-            android:layout_width="240dp"
-            android:layout_height="400dp"
-            android:id="@+id/imageAkasztofa"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:layout_below="@+id/buttonTippel"/>
-
-        <TextView
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textSzoveg"
-            android:gravity="center_horizontal"
-            android:layout_alignParentBottom="true"
-            android:text=""
-            android:textSize="30sp"/>
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/editTextujSzo"/>
 
-
-    </RelativeLayout>
-
+    </LinearLayout>
 
 </RelativeLayout>
